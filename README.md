@@ -8,8 +8,11 @@ Verbage :
 - Controller : Static, Architecturall, Only One.
   - Examples : Inject Controller, Game Controller
 
-- Logic : Game / Business Logic. Logic encapsilates 'services' and 'models' and 'interfaces'
+- Logic : Game / Business Logic. 
+  - Logic includes 'services' and 'models' and 'interfaces' and 'view models'
   - Examples : Error Logic, Score Logic, Account Logic, Room Logic
+  - No unity dependencies
+  - Testable, should live in a DLL (VS testing is better than unitys)
   
 - Models : Simple DTOS used by a service
   - Should be mostly fields / properties. Some methods are ok (ToString())
@@ -24,3 +27,9 @@ Verbage :
 - Infrastructure : A service which implements a hardware dependency
  - Mock, SmartFox, RestApi, SQLITE, Parse, JsonDB, CouchBase
  - Internal implementation should be  hidden agnosstic contract
+
+
+- Views : Presents someting to the user
+  - Imports Logic (Viewmodels, models, services, ect) 
+  - May or may not be observable.
+  - Unity dependencies ok
