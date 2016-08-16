@@ -22,6 +22,7 @@ Verbage :
 - ViewModels : The View's Model
   - logical proxy class that make services / models easier to use (for a view)
   - Implement Observable to enable data binding
+  - Should be optional for simple logic (AccountLogic does not need one, but, complex game logic might)
   
 - Interfaces (Contracts) : Describes the functionality of a service
  - Examples : (IAccountService, IBingoService)
