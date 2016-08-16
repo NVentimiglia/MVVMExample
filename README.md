@@ -7,6 +7,7 @@ Verbage :
 
 - Controller : Static, Architecturall, Only One.
   - Examples : Inject Controller, Game Controller
+  - Should be used for sparingly, as the static reference can make it hard to test.
 
 - Logic : Game / Business Logic. 
   - Logic includes 'services' and 'models' and 'interfaces' and 'view models'
@@ -17,17 +18,18 @@ Verbage :
 - Models : Simple DTOS used by a service
   - Should be mostly fields / properties. Some methods are ok (ToString())
   - Account Model, Score Model, FileInfo
+  - ViewModels are a logical proxy class that make services / models easier to use (for a view)
   
 - Interfaces (Contracts) : Describes the functionality of a service
- - Examples : (Mock, SmartFox, Local, Http)
+ - Examples : (IAccountService, IBingoService)
   
 - Services : Implementations a contract
  - Examples : MockAccountService, SmartFoxAccountService, RestApiAccountService
  
 - Infrastructure : A service which implements a hardware dependency
  - Mock, SmartFox, RestApi, SQLITE, Parse, JsonDB, CouchBase
- - Internal implementation should be  hidden agnosstic contract
-
+ - Internal implementation should be  hidden agnosstic (service) contract
+ - JsonDatabase, SQLLITEDatabase, SmartFoxConnection, PusherConnection
 
 - Views : Presents someting to the user
   - Imports Logic (Viewmodels, models, services, ect) 
