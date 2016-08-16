@@ -18,7 +18,10 @@ Verbage :
 - Models : Simple DTOS used by a service
   - Should be mostly fields / properties. Some methods are ok (ToString())
   - Account Model, Score Model, FileInfo
-  - ViewModels are a logical proxy class that make services / models easier to use (for a view)
+
+- ViewModels : The View's Model
+  - logical proxy class that make services / models easier to use (for a view)
+  - Implement Observable to enable data binding
   
 - Interfaces (Contracts) : Describes the functionality of a service
  - Examples : (IAccountService, IBingoService)
