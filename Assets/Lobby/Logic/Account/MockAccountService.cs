@@ -67,6 +67,5 @@ namespace Lobby.Logic
         {
             OnChange(Account);
         }
-        }
     }
 }
