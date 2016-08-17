@@ -13,7 +13,7 @@ Verbage :
   - Logic includes 'services' and 'models' and 'interfaces' and 'view models'
   - Examples : Error Logic, Score Logic, Account Logic, Room Logic
   - No unity dependencies
-  - Testable, should live in a DLL (VS testing is better than unitys)
+  - Testable, should live in a DLL
   
 - Models : Simple DTOS used by a service
   - Should be mostly fields / properties. Some methods are ok (ToString())
