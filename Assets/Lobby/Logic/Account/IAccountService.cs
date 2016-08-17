@@ -11,5 +11,7 @@ namespace Lobby.Logic
         void Delete();
         void Load();
         void Save();
+        
+        void RaiseChange();
     }
 }
