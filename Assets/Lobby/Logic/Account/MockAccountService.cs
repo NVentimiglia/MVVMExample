@@ -16,12 +16,6 @@ namespace Lobby.Logic
 
             // Load from store (redundent due to delete)
             Load();
-
-            // wire auto save
-            OnChange += model =>
-            {
-                Save();
-            };
         }
 
         public void Load()
@@ -29,6 +23,7 @@ namespace Lobby.Logic
             if (PlayerPrefs.HasKey("AccountController"))
             {
                 Account = JsonUtility.FromJson<AccountModel>(PlayerPrefs.GetString("AccountController"));
+                RaiseChange();
             }
             else
             {
@@ -44,6 +39,7 @@ namespace Lobby.Logic
         {
             PlayerPrefs.SetString("AccountController", JsonUtility.ToJson(Account));
             PlayerPrefs.Save();
+            RaiseChange();
         }
 
         /// <summary>
@@ -61,6 +57,16 @@ namespace Lobby.Logic
 
             PlayerPrefs.DeleteKey("AccountController");
             PlayerPrefs.Save();
+            RaiseChange();
+        }
+        
+        /// <summary>
+        /// Notify listeners of a change
+        /// </summary>
+        public void RaiseChange()
+        {
+            OnChange(Account);
+        }
         }
     }
 }
