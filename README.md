@@ -8,6 +8,7 @@ Verbage :
 - Controller : Static, Architecturall, Only One.
   - Examples : Inject Controller, Game Controller
   - Should be used for sparingly, as the static reference can make it hard to test.
+  - Somewhat replaced by services and ViewModels
 
 - Logic : Game / Business Logic. 
   - Logic includes 'services' and 'models' and 'interfaces' and 'view models'
@@ -19,10 +20,12 @@ Verbage :
   - Should be mostly fields / properties. Some methods are ok (ToString())
   - Account Model, Score Model, FileInfo
 
-- ViewModels : The View's Model
+- ViewModels : The View's Model 
+  - AKA ViewControllers (on IOS) 
   - logical proxy class that make services / models easier to use (for a view)
   - Implement Observable to enable data binding
   - Should be optional for simple logic (AccountLogic does not need one, but, complex game logic might)
+  - Example BingoViewModel, LobbyViewController
   
 - Interfaces (Contracts) : Describes the functionality of a service
  - Examples : (IAccountService, IBingoService)
