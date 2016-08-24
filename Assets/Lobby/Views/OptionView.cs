@@ -35,7 +35,7 @@ namespace Lobby.Views
         
         public void ShowHelp()
         {
-            LobbyController.Instance.HelpView.Show();
+            LobbyStartup.Instance.HelpView.Show();
         }
         
         public void ToggleTransport()
@@ -53,7 +53,7 @@ namespace Lobby.Views
 
         public void SignOut()
         {
-            LobbyController.Instance.Reset();
+            LobbyStartup.Instance.Reset();
         }
 
         public void ShowWebsite()

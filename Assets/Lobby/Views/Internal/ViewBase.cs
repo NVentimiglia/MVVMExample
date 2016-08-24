@@ -1,13 +1,14 @@
 using System;
 using System.Collections;
 using Framework;
+using Framework.Observables;
 using Lobby.Logic;
 using UnityEngine;
 
 namespace Lobby.Views
 {
     [AddComponentMenu("Lobby/Internal/ViewBase")]
-    public class ViewBase : MonoBehaviour
+    public class ViewBase : ObservableBehaviour
     {
         #region  Dependencies
 
@@ -18,8 +19,6 @@ namespace Lobby.Views
         [Inject]
         protected INoticeService NoticeService;
 
-        protected bool isRegistered;
-
         #endregion
 
         #region LifeCycle
@@ -29,13 +28,6 @@ namespace Lobby.Views
         /// </summary>
         public virtual void OnAwake()
         {
-            if (!isRegistered)
-            {
-                InjectController.RegisterSingleton(this);
-                isRegistered = true;
-            }
-
-            InjectController.Inject(this);
         }
 
         /// <summary>
@@ -112,7 +104,6 @@ namespace Lobby.Views
         }
         #endregion
 
-     
         #region Helper Methods
 
         // Dialog Helpers

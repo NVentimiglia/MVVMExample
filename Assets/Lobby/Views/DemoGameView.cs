@@ -16,6 +16,11 @@ namespace Lobby.Views
         [Inject]
         protected IScoreService Scores;
 
+        public string Score
+        {
+            get { return Scores.Self.Score + " Points"; }
+        }
+
         public override void OnAwake()
         {
             base.OnAwake();
@@ -41,6 +46,7 @@ namespace Lobby.Views
         {
             Scores.Self.Score++;
             Scores.PostSelf();
+            RaisePropertyChanged("Score");
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace Framework
 
         class InjectReference
         {
-            public Type InterfaceType;
+            public Type Type;
             public object Instance;
             public Func<object> Factory;
         }
@@ -40,7 +40,7 @@ namespace Framework
             //Todo : Sanity
             Container.Add(new InjectReference
             {
-                InterfaceType = typeof(TInterface),
+                Type = typeof(TInterface),
                 Factory = () => { return new TInstance(); },
             });
         }
@@ -53,7 +53,7 @@ namespace Framework
             //Todo : Sanity
             Container.Add(new InjectReference
             {
-                InterfaceType = typeof(TInstance),
+                Type = typeof(TInstance),
                 Factory = () => { return new TInstance(); },
             });
         }
@@ -66,7 +66,7 @@ namespace Framework
             //Todo : Sanity
             Container.Add(new InjectReference
             {
-                InterfaceType = typeof(TInterface),
+                Type = typeof(TInterface),
                 Factory = factory as Func<object>,
             });
 
@@ -80,7 +80,7 @@ namespace Framework
             //Todo : Sanity
             Container.Add(new InjectReference
             {
-                InterfaceType = typeof(TInterface),
+                Type = typeof(TInterface),
                 Instance = new TInstance()
             });
 
@@ -89,30 +89,18 @@ namespace Framework
         /// <summary>
         /// Registers a singleton / shared instance
         /// </summary>
-        public static void RegisterSingleton<TInstance>() where TInstance : class, new()
+        public static TInstance RegisterSingleton<TInterface, TInstance>(TInstance instance) where TInstance : class
         {
             //Todo : Sanity
             Container.Add(new InjectReference
             {
-                InterfaceType = typeof(TInstance),
-                Instance = new TInstance()
-            });
-
-        }
-
-        /// <summary>
-        /// Registers a singleton / shared instance
-        /// </summary>
-        public static void RegisterSingleton<TInterface, TInstance>(TInstance instance) where TInstance : class
-        {
-            //Todo : Sanity
-            Container.Add(new InjectReference
-            {
-                InterfaceType = typeof(TInterface),
+                Type = typeof(TInterface),
                 Instance = instance
             });
 
+            return instance;
         }
+
 
         /// <summary>
         /// Registers a singleton / shared instance
@@ -122,13 +110,26 @@ namespace Framework
             //Todo : Sanity
             Container.Add(new InjectReference
             {
-                InterfaceType = typeof(TInstance),
+                Type = instance.GetType(),
                 Instance = instance
             });
 
             return instance;
         }
+        /// <summary>
+        /// Registers a singleton / shared instance
+        /// </summary>
+        public static TInstance RegisterSingleton<TInstance>(TInstance instance, Type type) where TInstance : class
+        {
+            //Todo : Sanity
+            Container.Add(new InjectReference
+            {
+                Type = type,
+                Instance = instance
+            });
 
+            return instance;
+        }
 
         /// <summary>
         /// Returns an injected instance
@@ -143,21 +144,37 @@ namespace Framework
         /// <summary>
         /// Returns an injected instance
         /// </summary>
-        public static object Get(Type interfaceType)
+        /// <param name="interfaceType"></param>
+        /// <param name="recurrsive">will load dependencie`s dependency</param>
+        public static object Get(Type interfaceType, bool recurrsive = true)
         {
-            var match = Container.FirstOrDefault(o => interfaceType.IsAssignableFrom(o.InterfaceType));
+            var match = Container.FirstOrDefault(o => interfaceType.IsAssignableFrom(o.Type));
 
             if (match != null)
             {
                 if (match.Instance != null)
                 {
                     //find dependencies in dependency
-                    return Inject(match.Instance);
+                    if (recurrsive)
+                    {
+                        return Inject(match.Instance);
+                    }
+                    else
+                    {
+                        return match.Instance;
+                    }
                 }
                 else if (match.Factory != null)
                 {
                     //find dependencies in dependency
-                    return Inject(match.Factory());
+                    if (recurrsive)
+                    {
+                        return Inject(match.Factory());
+                    }
+                    else
+                    {
+                        return match.Factory();
+                    }
                 }
             }
 
@@ -169,30 +186,37 @@ namespace Framework
         /// Resolves dependencies
         /// </summary>
         /// <param name="instance"></param>
-        public static T Inject<T>(T instance)
+        public static T Inject<T>(T instance) where T : class
         {
-            //TODO Reflector Cache
-            var allFields = instance
-                .GetType()
-                .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-                .Where(o => o.GetCustomAttributes(typeof(InjectAttribute), true).Length > 0)
-                .ToArray();
-
-            for (int i = 0;i < allFields.Length;i++)
+            try
             {
-                try
+                //TODO Reflector Cache
+                var allFields = instance
+                    .GetType()
+                    .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                    .Where(o => o.GetCustomAttributes(typeof(InjectAttribute), true).Length > 0)
+                    .ToArray();
+
+                for (int i = 0; i < allFields.Length; i++)
                 {
-                    var field = allFields[i];
+                    try
+                    {
+                        var field = allFields[i];
 
-                    var type = field.FieldType;
+                        var type = field.FieldType;
 
-                    field.SetValue(instance, Get(type));
+                        field.SetValue(instance, Get(type, false));
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogException(ex);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Debug.LogException(ex);
-                }
-
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex);
             }
 
             return instance;

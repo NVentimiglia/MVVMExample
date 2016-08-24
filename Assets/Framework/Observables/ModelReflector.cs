@@ -14,14 +14,14 @@ namespace Framework.Observables
     {
         public object Instance;
         public event PropertyChanged OnPropertyChanged = delegate { };
-        
+
         public ModelReflector(object instance)
         {
             Instance = instance;
 
-            if(Instance is IPropertyChanged)
+            if (Instance is IPropertyChanged)
             {
-                ((IPropertyChanged)Instance).OnPropertyChanged += OnPropertyChanged;
+                ((IPropertyChanged)Instance).OnPropertyChanged += RaiseEvent;
             }
         }
 
@@ -29,11 +29,12 @@ namespace Framework.Observables
         {
             if (Instance is IPropertyChanged)
             {
-                ((IPropertyChanged)Instance).OnPropertyChanged -= OnPropertyChanged;
+                ((IPropertyChanged)Instance).OnPropertyChanged -= RaiseEvent;
             }
             Instance = null;
         }
-        
+
+
         /// <summary>
         /// Get Member Value
         /// </summary>
@@ -45,7 +46,8 @@ namespace Framework.Observables
             //TODO sanity
             //TODO Cache Reflection
             //TODO Conversion
-            var temp = this.GetType().GetMember(memberName)[0];
+            var temps = Instance.GetType().GetMember(memberName);
+            var temp = temps[0];
             if (temp is FieldInfo)
             {
                 return (T)(temp as FieldInfo).GetValue(Instance);
@@ -71,7 +73,8 @@ namespace Framework.Observables
             //TODO sanity
             //TODO Cache Reflection
             //TODO Conversion
-            var temp = this.GetType().GetMember(memberName)[0];
+            var temps = Instance.GetType().GetMember(memberName);
+            var temp = temps[0];
             if (temp is FieldInfo)
             {
                 (temp as FieldInfo).SetValue(Instance, value);
@@ -84,22 +87,30 @@ namespace Framework.Observables
             {
                 (temp as MethodInfo).Invoke(Instance, new object[] { value });
             }
-        } 
-        
+        }
+
         /// <summary>
-           /// Invoke Method Value
-           /// </summary>
-           /// <param name="memberName"></param>
+        /// Invoke Method Value
+        /// </summary>
+        /// <param name="memberName"></param>
         public void Invoke(string memberName)
         {
             //TODO sanity
             //TODO Cache Reflection
             //TODO Conversion
-            var temp = this.GetType().GetMember(memberName)[0];
-            if(temp is MethodInfo)
+            var temps = Instance.GetType().GetMember(memberName);
+            var temp = temps[0];
+            if (temp is MethodInfo)
             {
                 (temp as MethodInfo).Invoke(Instance, null);
             }
         }
+
+
+        private void RaiseEvent(string memberName)
+        {
+            OnPropertyChanged(memberName);
+        }
+
     }
 }

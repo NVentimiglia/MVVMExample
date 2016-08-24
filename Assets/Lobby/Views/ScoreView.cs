@@ -40,7 +40,7 @@ namespace Lobby.Views
 
         void DoExit()
         {
-            LobbyController.Instance.Reset();
+            LobbyStartup.Instance.Reset();
         }
 
         public void Back()

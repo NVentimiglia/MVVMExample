@@ -10,11 +10,11 @@ namespace Lobby
     /// <summary>
     /// Game Startup class
     /// </summary>
-    [AddComponentMenu("Lobby/LobbyController")]
-    public class LobbyController : MonoBehaviour
+    [AddComponentMenu("Lobby/LobbyStartup")]
+    public class LobbyStartup : MonoBehaviour
     {
         //Poor mans IOC
-        public static LobbyController Instance { get; private set; }
+        public static LobbyStartup Instance { get; private set; }
 
         //Game Settings
         public string HostPath = "127.0.0.1";
@@ -67,18 +67,17 @@ namespace Lobby
             Accounts = InjectController.RegisterSingleton(new MockAccountService());
             Scores = InjectController.RegisterSingleton(new MockScoreService());
             Chats = InjectController.RegisterSingleton(new MockChatService());
-            Accounts = new MockAccountService();
-            Accounts = new MockAccountService();
-            Accounts = new MockAccountService();
-
         }
 
         void ConfigViews()
         {
             // Views
+
+
             foreach (var view in GetComponentsInChildren<ViewBase>(true))
             {
                 view.Hide(true);
+                InjectController.RegisterSingleton(view, view.GetType());
                 InjectController.Inject(view);
                 view.OnAwake();
             }
