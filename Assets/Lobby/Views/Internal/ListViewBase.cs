@@ -44,7 +44,7 @@ namespace Lobby.Views
             Items.Add(model, view);
             Views.Add(view, model);
 
-            inst.transform.SetParent(ItemContainer); 
+            inst.transform.SetParent(ItemContainer,false); 
             inst.SetActive(true);
         }
         
